@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+
+:root {
+  --primary-1: #f3f3f3;
+  --primary-2: #e3e3e3;
+  --primary-3: #bfbfbf;
+  --accent-1: #59a6b8;
+  --accent-2: #107fae;
+  --accent-3: #3b6678;
+  --background-1: #41405c;
+  --background-2p5: #302f46;
+  --background-2: #272639;
+  --background-3: #14131e;
+  --highlight-color: rgba(15, 154, 210, .8);
+  --marked-color: rgba(68, 50, 100, .8);
+  --selection-color: rgba(15, 154, 210, .2);
+  --date-icon-filter: invert(87%) sepia(35%) saturate(1833%) hue-rotate(161deg) brightness(77%) contrast(83%);
+  --font-display: "Outfit", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-body: "Outfit", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, helvetica, arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-monospace: "DM Mono", monospace;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: var(--font-display);
+  color: var(--primary-2);
+  transition: all 300ms;
+}
+
+html, body {
+  display: flex;
+  flex-direction: row;
+  padding: 25px;
+  height: 100%;
+  width: 100%;
+
+  background: var(--background-3);
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 15px;
+
+  width: 75%;
+  height: 75%;
+
+  background: var(--background-2);
+}
