@@ -2,10 +2,12 @@ const express = require("express");
 const http = require("http");
 const wss = require("socket.io");
 const path = require("path");
+const { QuickDB } = require('quick.db');
 
 require("ejs");
 
 const app = express();
+const db = new QuickDB();
 const server = http.Server(app);
 const ws = wss(server);
 const users = [];
@@ -13,7 +15,7 @@ const users = [];
 ws.on("connection", socket => {
   users.push(socket.id);
 
-  socket.on("UserMessage", async message => {
+  socket.on("UserMessage-Lobby", async message => {
     let resp = await require("node-fetch")("https://replit.com/graphql", {
       method: "POST",
       headers: {
@@ -34,16 +36,18 @@ ws.on("connection", socket => {
       ? data.user.image
       : "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256";
 
-    ws.emit("UserMessage", message);
+    ws.emit("UserMessage-Lobby", message);
+		await db.push('messages', message)
   });
 });
 
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
-let whitelist = ["bddy", "zplusfour", "RayhanADev", "dainfloop"];
+let whitelist = ["bddy", "zplusfour", "RayhanADev", "haroon"];
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+	let cachedMessages = await db.get('messages');
   const username = req.get("X-Replit-User-Name") || null;
   console.log(username);
   if (!whitelist.includes(username))
@@ -53,8 +57,10 @@ app.get("/", (req, res) => {
   res.render("index", {
     user: {
       name: username
-    }
+    },
+		cachedMessages
   });
+	console.log(cachedMessages)
 });
 
 app.get("/lg", (req, res) => {

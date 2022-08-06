@@ -27,7 +27,17 @@
         <h4>#lobby</h4>
         <p class="desc">This is the lobby channel.</p>
       </div>
-      <div id="chat"></div>
+      <div id="chat">
+				<% cachedMessages.map(m => { %>
+				<div id="message">
+		<div style="display:flex;align-items:center;">
+			<img class="pfp" src="<%= m.pfp %>">
+			<span id="author"><%= m.author %></span>
+		</div>
+		<p id="text"><%= m.content %></p>
+		</div>
+				<% }) %>
+			</div>
     </div>
     <div id="chat_inputs">
       <input type="text" id="sendmsg" placeholder="Message #lobby" />
@@ -44,7 +54,7 @@
     }
   </script>
   <script src="/socket.io/socket.io.js"></script>
-  <script u="<%= user.name %>" src="/js/Socket.js"></script>
+  <script u="<%= user.name %>" src="/js/SocketLobby.js"></script>
 </body>
 
 </html>

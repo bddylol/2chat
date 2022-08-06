@@ -19,7 +19,7 @@
 	// 	})
 	// })
 
-	socket.on('UserMessage', message => {
+	socket.on('UserMessage-Lobby', message => {
 		function timeSince(timeStamp) {
 			var now = new Date(),
 				secondsPast = (now.getTime() - timeStamp) / 1000;
@@ -46,7 +46,6 @@
 		<div style="display:flex;align-items:center;">
 			<img class="pfp" src="${message.pfp}" />
 			<span id="author">${message.author}</span>
-			<span id="date">${timeSince(message.date)}</span>
 		</div>
 		<p id="text">${message.content}</p>
 		`
@@ -86,17 +85,17 @@
 			<img class="pfp" src="https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256" />
 			<span id="author">System</span>
 	 		<span id="bottag">Verified Bot</span>
-			<span id="date">${timeSince(new Date().getTime())}</span>
 		</div>
 		<p id="text">Pong</p>
 		`
 			chat.appendChild(m)
-			chat.scrollTo(0, document.body.scrollHeight);
+			chat.scrollIntoView({ behavior: 'smooth' });
+			// chat.scrollTop(chat.scrollHeight);
 			return;
 		}
 
 
-		socket.emit("UserMessage", { author: username, date: new Date().getTime(), content: ipt.value });
+		socket.emit("UserMessage-Lobby", { author: username, date: new Date().getTime(), content: ipt.value });
 		ipt.value = ""
 	}
 
