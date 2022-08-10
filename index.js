@@ -36,6 +36,10 @@ ws.on("connection", socket => {
       ? data.user.image
       : "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256";
 
+		if (message.author == "bddy") {
+			message.author = "[Developer] " + message.author
+		}
+
     ws.emit("UserMessage-Lobby", message);
 		await db.push('messages', message)
   });
@@ -44,23 +48,26 @@ ws.on("connection", socket => {
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 
-let whitelist = ["bddy", "zplusfour", "RayhanADev", "haroon"];
+let whitelist = ["bddy", "zplusfour", "RayhanADev", "haroon", 'discordaddict'];
 
 app.get("/", async (req, res) => {
 	let cachedMessages = await db.get('messages');
+	let cpt = req.query['compact'] || true
+	console.log(cpt)
   const username = req.get("X-Replit-User-Name") || null;
-  console.log(username);
-  if (!whitelist.includes(username))
-    return res.send(
-      "You are currently not whitelisted for <b>2chat</b>. Please wait untill we release. Thanks!"
-    );
+  // console.log(username);
+  // if (!whitelist.includes(username))
+  //   return res.send(
+  //     "You are currently not whitelisted for <b>2chat</b>. Please wait untill we release. Thanks!"
+  //   );
   res.render("index", {
     user: {
       name: username
     },
+		cpt,
 		cachedMessages
   });
-	console.log(cachedMessages)
+	// console.log(cachedMessages)
 });
 
 app.get("/lg", (req, res) => {

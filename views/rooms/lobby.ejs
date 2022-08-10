@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://2chat.bddy.repl.co/css/Home.css" rel="stylesheet" />
+
+  <title>2chat</title>
+</head>
+
+<body>
+  <nav>
+    <h3>2chat</h3>
+    <p>Welcome, <%= user.name %></p>
+    <a class="button active" href="/lobby">#lobby</a>
+    <a class="button">#example</a>
+    <a class="button">#code-help</a>
+  </nav>
+
+
+
+  <div class="container" id="container">
+    <div id="chat_wrapper">
+      <div id="chat_header">
+        <h4>#lobby</h4>
+        <p class="desc">This is the lobby channel.</p>
+      </div>
+      <div id="chat">
+				<% cachedMessages.map(m => { %>
+				<div id="message">
+		<div style="display:flex;align-items:center;">
+			<img class="pfp" src="<%= m.pfp %>">
+			<span id="author"><%= m.author %></span>
+		</div>
+		<p id="text"><%= m.content %></p>
+		</div>
+				<% }) %>
+			</div>
+    </div>
+    <div id="chat_inputs">
+      <input type="text" id="sendmsg" placeholder="Message #lobby" />
+      <input type="submit" id="smbt" value="Send" />
+    </div>
+  </div>
+  <div class="login" id="login">
+    <script authed="location.reload()" src="https://auth.util.repl.co/script.js"></script>
+
+  </div>
+  <script>
+    function changeTheme(theme = "furretcss") {
+      return 'Selected theme ' + theme;
+    }
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script u="<%= user.name %>" src="https://2chat.bddy.repl.co/js/SocketLobby.js"></script>
+</body>
+
+</html>
