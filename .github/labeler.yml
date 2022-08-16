@@ -1,0 +1,12 @@
+app:
+- app/**/*
+- public/installer-win.exe
+
+frontend:
+- public/**/*
+- views/**/*
+
+backend:
+- index.js
+- package.json
+- dontsaythat.js
