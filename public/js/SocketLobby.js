@@ -1,5 +1,7 @@
 (async () => {
 	var selem = document.currentScript;
+	let chat = document.getElementById("chat")
+	chat.scrollTo(0, chat.scrollHeight);
 
 	// var username = selem.attributes.u.value
 
@@ -18,6 +20,7 @@
 	// 		socket.emit('UserMessage', { author: ms.author, date: ms.date, content: m.content })
 	// 	})
 	// })
+
 
 	socket.on('UserMessage-Lobby', message => {
 		function timeSince(timeStamp) {
@@ -50,11 +53,13 @@
 		<p id="text">${message.content}</p>
 		`
 		chat.appendChild(m)
-		chat.scrollTo(0, document.body.scrollHeight);
+		chat.scrollTo(0, chat.scrollHeight);
 	});
 
 	let ipt = document.getElementById("sendmsg")
 	let s = document.getElementById("smbt")
+
+	ipt.focus()
 
 	function send() {
 		if (ipt.value == "/test") {

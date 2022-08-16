@@ -45,9 +45,16 @@ nav {
 	flex-direction: column;
 	padding: 15px;
 
+	gap: 5px;
+
 	height: 100%;
 	width: 200px;
 	overflow-y: auto;
+}
+
+nav hr {
+	border: none;
+	border-top: 1px solid var(--background-1);
 }
 
 .container {
@@ -203,6 +210,7 @@ nav {
 	border-radius: 7px;
 	margin-top: 5px;
 	cursor: pointer;
+	text-decoration: none;
 }
 
 .button:hover {
@@ -211,4 +219,67 @@ nav {
 
 .active {
 	font-weight: bold;
+}
+
+.emoji {
+	height: 25px;
+	width: 25px;
+}
+
+.joinroom-wrapper {
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background: rgba(0,0,0,.3);
+    left: 0;
+	padding: 15px;
+    height: 100%;
+    flex-direction: column;
+/*     justify-content: center; */
+    align-items: center;
+}
+
+.joinroom {
+	    display: flex;
+    flex-direction: column;
+    padding: 39px;
+    width: 452px;
+    gap: 10px;
+    height: auto;
+    background: var(--background-2);
+    border-radius: 9px;
+    align-items: center;
+}
+
+.joinroom input {
+	    background: var(--background-3);
+    outline: 0;
+    border: 0;
+    color: #fff;
+    padding: 11px 14px;
+    width: 100%;
+    border-radius: 7px;
+}
+
+.joinroom input[type="submit"]:hover {
+	    background: var(--background-1);
+	cursor: pointer;
+}
+
+code,samp{background:var(--background-2);border-radius:.5rem;color:var(--primary-2);font-family:var(--font-monospace);font-size:16px;overflow-x:auto;padding:.25rem}
+
+img.user {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  padding: 10px 10px;
+}
+
+
+.userVoiceChatProfilePicture {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
 }
