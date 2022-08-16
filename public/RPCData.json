@@ -1,0 +1,13 @@
+{
+	"voice": {
+		"sitting": "In a voice channel.",
+		"talking": "Talking in {CHANNEL}"
+	},
+	"channels": {
+		"sitting": "Sitting in {CHANNEL}",
+    "talking": "Talking in {CHANNEL}"
+	},
+	"home": {
+		"idle": "Sitting on the home menu."
+	}
+}
