@@ -1,0 +1,18 @@
+{
+  "name": "2chat",
+  "version": "1.0.0",
+  "description": "A chat app developed on Replit by bddy and DaInfLoop.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "bddy and DaInfLoop",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^20.0.1",
+    "electron-builder": "^23.3.3"
+  },
+  "dependencies": {
+    "discord-rpc": "^4.0.1"
+  }
+}
