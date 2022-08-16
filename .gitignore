@@ -1,6 +1,7 @@
 node_modules
 json.sqlite
 package-lock.json
+.breakpoints
 
 # Logs
 logs
