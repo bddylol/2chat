@@ -21,6 +21,10 @@
 	// 	})
 	// })
 
+	socket.on('reload', () => {
+		location.reload()
+	})
+	
 	socket.on("PA", async u => {
 		let chat = document.getElementById("chat")
 

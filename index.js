@@ -52,7 +52,8 @@ let betaTesters = [
 	"21natzil",
 	"IroncladDev",
 	"Cleverbot",
-	"connor"
+	"connor",
+	"RayhanADev"
 ]
 
 const createDOMPurify = require('dompurify');
@@ -73,6 +74,10 @@ ws.on("connection", socket => {
 
 	// socket.join(socket.handshake.headers.referer instanceof String ? socket.handshake.headers.referer.split('/')[4] : 'debug-see-all-rooms')
 	socket.join(socket.handshake.headers.referer.split('/')[4])
+	socket.on('reload', async u => {
+		if (['bddy', 'haroon'].includes(socket.handshake.headers['x-replit-user-name']) == false) return;
+		ws.emit('reload', html)
+	})
 	socket.on('PA', async u => {
 		if (['bddy', 'haroon'].includes(socket.handshake.headers['x-replit-user-name']) == false) return;
 		let html = `
@@ -118,9 +123,10 @@ ws.on("connection", socket => {
 		message.pfp = socket.handshake.headers['x-replit-user-profile-image'] || "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256";
 
 		const titles = {
-			"bddy": "<span id='bottag' style='margin-left: 5px'>Developer</span> <span id='bottag' style='margin-left: 5px'>please follow me on replit i beg you, this is a goofy tag</span> <span id='bottag' style='margin-left: 5px'>please follow me on replit i beg you, this is a goofy tag</span>",
+			"bddy": "<span id='bottag' style='margin-left: 5px' class='epicrainbowbg'>Developer</span>",
 			"haroon": "<span id='bottag' style='margin-left: 5px'>Developer</span>",
-			"Cleverbot": `<span id="bottag" style="margin-left: 5px">Verified Bot</span>`
+			"Cleverbot": `<span id="bottag" style="margin-left: 5px">Verified Bot</span>`,
+			"RayhanADev": "<span id='bottag' style='margin-left: 5px'>Furret.CSS Theme Creator</span>"
 		}
 
 		const newTitles = {
