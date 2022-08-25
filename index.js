@@ -6,10 +6,10 @@ const path = require("path");
 const app = express();
 const server = http.Server(app);
 const ws = wss(server, {
-  cors: {
-    origin: ["https://admin.socket.io"],
-    credentials: true
-  }
+	cors: {
+		origin: ["https://admin.socket.io"],
+		credentials: true
+	}
 });
 const io = ws;
 const dontsaythat = require('./dontsaythat')
@@ -27,19 +27,19 @@ filter.removeWords('god', 'poop', 'crap', 'goddamn', 'scrap')
 const { name } = require('./package.json')
 
 instrument(ws, {
-  auth: {
-    type: "basic",
-    username: "admin",
-    password: "$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS"
-  },
+	auth: {
+		type: "basic",
+		username: "admin",
+		password: "$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS"
+	},
 });
 
 const admin = ws.of('/admin')
 
 const nsps = {
-  '/': ws.of('/'),
-  '/admin': ws.of('/admin'),
-  '/voice': ws.of('/voice')
+	'/': ws.of('/'),
+	'/admin': ws.of('/admin'),
+	'/voice': ws.of('/voice')
 }
 
 const { '/admin': adminNsp, '/voice': voiceNsp } = nsps
@@ -51,8 +51,8 @@ let betaTesters = [
 	"zplusfour",
 	"21natzil",
 	"IroncladDev",
-  "Cleverbot",
-  "connor"
+	"Cleverbot",
+	"connor"
 ]
 
 const createDOMPurify = require('dompurify');
@@ -62,17 +62,17 @@ const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
 ws.on("connection", socket => {
-  // socket.handshake.headers.referer.split('/')[4]
-  // if (socket.handshake.headers.referer instanceof String && socket.handshake.headers.referer.split('/')[4] == "debug-see-all-rooms") return socket.emit("UserMessage", { 
-  //     channel: "debug-see-all-rooms",
-  //     author: `System <span id="bottag" style="margin-left: 10px">Verified Bot</span>`, 
-  //     date: new Date().getTime(), 
-  //     content: "No. Just no.",
-  //     pfp: 'https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256'
-  //   })
-  
-  // socket.join(socket.handshake.headers.referer instanceof String ? socket.handshake.headers.referer.split('/')[4] : 'debug-see-all-rooms')
-  socket.join(socket.handshake.headers.referer.split('/')[4])
+	// socket.handshake.headers.referer.split('/')[4]
+	// if (socket.handshake.headers.referer instanceof String && socket.handshake.headers.referer.split('/')[4] == "debug-see-all-rooms") return socket.emit("UserMessage", { 
+	//     channel: "debug-see-all-rooms",
+	//     author: `System <span id="bottag" style="margin-left: 10px">Verified Bot</span>`, 
+	//     date: new Date().getTime(), 
+	//     content: "No. Just no.",
+	//     pfp: 'https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256'
+	//   })
+
+	// socket.join(socket.handshake.headers.referer instanceof String ? socket.handshake.headers.referer.split('/')[4] : 'debug-see-all-rooms')
+	socket.join(socket.handshake.headers.referer.split('/')[4])
 	socket.on('PA', async u => {
 		if (['bddy', 'haroon'].includes(socket.handshake.headers['x-replit-user-name']) == false) return;
 		let html = `
@@ -84,56 +84,56 @@ ws.on("connection", socket => {
 	`
 		ws.emit('PA', html)
 	})
-  socket.on('SlashCommand', async _ => {
-    function send(msg, target = socket) {
-      target.emit('UserMessage', { 
-        channel: socket.handshake.headers.referer.split('/')[4], 
-        author: `System <span id="bottag" style="margin-left: 10px">Verified Bot</span>`, 
-        date: new Date().getTime(), 
-        content: msg,
-        pfp: 'https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256'
-      })
-    }
-    try {
-      let args = _.slice(1).split(' ')
-      let cmd = args.shift();
-  
-      let cmds = require('fs').readdirSync('./slashcmds').filter(x => x.endsWith('.js'))
-  
-      if (cmds.includes(`${cmd}.js`)) {
-        let exportVariable;
-        eval(
-          require('fs').readFileSync(`./slashcmds/${cmd}.js`).toString()
-            .replaceAll('module.exports', 'exportVariable')
-            .replaceAll('exports', 'exportVariable')
-        )
-  
-        exportVariable.execute(socket, args, ws, send)
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  })
+	socket.on('SlashCommand', async _ => {
+		function send(msg, target = socket) {
+			target.emit('UserMessage', {
+				channel: socket.handshake.headers.referer.split('/')[4],
+				author: `System <span id="bottag" style="margin-left: 10px">Verified Bot</span>`,
+				date: new Date().getTime(),
+				content: msg,
+				pfp: 'https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256'
+			})
+		}
+		try {
+			let args = _.slice(1).split(' ')
+			let cmd = args.shift();
+
+			let cmds = require('fs').readdirSync('./slashcmds').filter(x => x.endsWith('.js'))
+
+			if (cmds.includes(`${cmd}.js`)) {
+				let exportVariable;
+				eval(
+					require('fs').readFileSync(`./slashcmds/${cmd}.js`).toString()
+						.replaceAll('module.exports', 'exportVariable')
+						.replaceAll('exports', 'exportVariable')
+				)
+
+				exportVariable.execute(socket, args, ws, send)
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	})
 	socket.on("UserMessage", async message => {
 		message.pfp = socket.handshake.headers['x-replit-user-profile-image'] || "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256";
 
 		const titles = {
 			"bddy": "<span id='bottag' style='margin-left: 5px'>Developer</span> <span id='bottag' style='margin-left: 5px'>please follow me on replit i beg you, this is a goofy tag</span> <span id='bottag' style='margin-left: 5px'>please follow me on replit i beg you, this is a goofy tag</span>",
 			"haroon": "<span id='bottag' style='margin-left: 5px'>Developer</span>",
-      "Cleverbot": `<span id="bottag" style="margin-left: 5px">Verified Bot</span>`
+			"Cleverbot": `<span id="bottag" style="margin-left: 5px">Verified Bot</span>`
 		}
 
-    const newTitles = {
-      "bddy": [
-        "<span style='height:100%;width:100%;' class='epicrainbowbg'>dev</span>"
-      ],
-      "haroon": [
-        "Developer"
-      ],
-      "Cleverbot": [
-        "Verified Bot"
-      ]
-    }
+		const newTitles = {
+			"bddy": [
+				"<span style='height:100%;width:100%;' class='epicrainbowbg'>dev</span>"
+			],
+			"haroon": [
+				"Developer"
+			],
+			"Cleverbot": [
+				"Verified Bot"
+			]
+		}
 
 		const emojis = {
 			"bddy": "https://storage.googleapis.com/replit/images/1654871865103_c37e9b4f4dbbc3efc3720a0b950432e2.gif",
@@ -154,8 +154,8 @@ ws.on("connection", socket => {
 		//message.content = DOMPurify.sanitize(message.content)
 		message.content = marked.parse(message.content)
 		dontsaythat.forEach(function(word) {
-  		message.content = message.content.replace(new RegExp(word, 'gi'), '****')
-    })
+			message.content = message.content.replace(new RegExp(word, 'gi'), '****')
+		})
 
 		// doing emojis
 
@@ -163,28 +163,28 @@ ws.on("connection", socket => {
 
 		// ending emojis
 
-    let shadowBans = await db.get('shadowBans')
+		let shadowBans = await db.get('shadowBans')
 
-    message.raw = {}
+		message.raw = {}
 
-    message.raw.content = msg
-    message.raw.author = username
+		message.raw.content = msg
+		message.raw.author = username
 
-    if (Object.keys(shadowBans).includes(username)) {
-      let adminSocks = (await io.fetchSockets()).filter(x => ['3586618', '3670753'].includes(x.handshake.headers['x-replit-user-id']))
+		if (Object.keys(shadowBans).includes(username)) {
+			let adminSocks = (await io.fetchSockets()).filter(x => ['3586618', '3670753'].includes(x.handshake.headers['x-replit-user-id']))
 
-      if (adminSocks.length) {
-        adminSocks.forEach(sock => {
-          sock.emit("UserMessage", message, true)
-        })
-      }
-      
-      return socket.emit("UserMessage", message)
-    }
+			if (adminSocks.length) {
+				adminSocks.forEach(sock => {
+					sock.emit("UserMessage", message, true)
+				})
+			}
+
+			return socket.emit("UserMessage", message)
+		}
 
 		ws.to(message.channel).emit("UserMessage", message);
 		await db.push('messages-' + message.channel, message);
-		if(message.channel == "spam") return;
+		if (message.channel == "spam") return;
 		console.log(`(#${message.channel}) ${username}: ${msg}`)
 	});
 });
@@ -208,7 +208,7 @@ app.get("/", async (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.redirect('https://replit.com/auth_with_repl_site?domain=2chat.bddy.repl.co')
+	res.redirect('https://replit.com/auth_with_repl_site?domain=2chat.bddy.repl.co')
 })
 
 app.get("/channels/:channel", async (req, res) => {
