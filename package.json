@@ -1,7 +1,7 @@
 {
-  "name": "nodejs",
+  "name": "2chat",
   "version": "1.0.0",
-  "description": "",
+  "description": "What is 2Chat? 2Chat is a text & voice replit chat application with a built electron app. You can chat with other replit users, or create a room with the 'Join Room' or 'Join Voice' button. Voice chat is currently only allowed with whitelisted users, as we cannot moderate Voice Chat.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,12 +10,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/collection": "^1.0.1",
+    "@socket.io/admin-ui": "^0.4.0",
     "@types/node": "^18.0.6",
+    "axios": "^0.27.2",
     "bad-words": "^3.0.4",
+    "bcrypt": "^5.0.1",
     "better-sqlite3": "^7.6.2",
+    "discord-rpc": "^4.0.1",
+    "dompurify": "^2.4.0",
     "ejs": "^3.1.8",
+    "electron": "^20.0.2",
     "express": "^4.18.1",
+    "jsdom": "^20.0.0",
     "marked": "^4.0.18",
     "node-fetch": "^2.6.7",
     "quick.db": "^9.0.6",

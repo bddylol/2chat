@@ -1,25 +1,78 @@
 const express = require("express");
 const http = require("http");
 const wss = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
 const path = require("path");
 const app = express();
 const server = http.Server(app);
-const ws = wss(server);
+const ws = wss(server, {
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true
+  }
+});
+const io = ws;
 const dontsaythat = require('./dontsaythat')
 const { QuickDB } = require('quick.db');
 const { marked } = require('marked');
 const db = new QuickDB();
 const ejs = require("ejs");
 const users = [];
-const Filter = require('bad-words'),
-	filter = new Filter({ emptyList: true });
+// const Filter = require('bad-words'),
+// 	filter = new Filter({ emptyList: true });
 
-filter.addWords(...dontsaythat)
+// filter.addWords(...dontsaythat)
+// filter.removeWords('god', 'poop', 'crap', 'goddamn')
 
+const { name } = require('./package.json')
 
+instrument(ws, {
+  auth: {
+    type: "basic",
+    username: "admin",
+    password: "$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS"
+  },
+});
 
+const admin = ws.of('/admin')
+
+const nsps = {
+  '/': ws.of('/'),
+  '/admin': ws.of('/admin'),
+  '/voice': ws.of('/voice')
+}
+
+const { '/admin': adminNsp, '/voice': voiceNsp } = nsps
+
+let betaTesters = [
+	"haroon",
+	"bddy",
+	"Platformer22",
+	"zplusfour",
+	"21natzil",
+	"IroncladDev",
+  "Cleverbot",
+  "connor"
+]
+
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 ws.on("connection", socket => {
+  // socket.handshake.headers.referer.split('/')[4]
+  // if (socket.handshake.headers.referer instanceof String && socket.handshake.headers.referer.split('/')[4] == "debug-see-all-rooms") return socket.emit("UserMessage", { 
+  //     channel: "debug-see-all-rooms",
+  //     author: `System <span id="bottag" style="margin-left: 10px">Verified Bot</span>`, 
+  //     date: new Date().getTime(), 
+  //     content: "No. Just no.",
+  //     pfp: 'https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256'
+  //   })
+  
+  // socket.join(socket.handshake.headers.referer instanceof String ? socket.handshake.headers.referer.split('/')[4] : 'debug-see-all-rooms')
+  socket.join(socket.handshake.headers.referer.split('/')[4])
 	socket.on('PA', async u => {
 		if (u.name !== "bddy") return;
 		let html = `
@@ -29,34 +82,45 @@ ws.on("connection", socket => {
 		<span>${u.m}</span></div>
 		</div>
 	`
-		io.emit('PA', html)
+		ws.emit('PA', html)
 	})
+  socket.on('SlashCommand', async _ => {
+    function send(msg, target = socket) {
+      target.emit('UserMessage', { 
+        channel: socket.handshake.headers.referer.split('/')[4], 
+        author: `System <span id="bottag" style="margin-left: 10px">Verified Bot</span>`, 
+        date: new Date().getTime(), 
+        content: msg,
+        pfp: 'https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256'
+      })
+    }
+    try {
+      let args = _.slice(1).split(' ')
+      let cmd = args.shift();
+  
+      let cmds = require('fs').readdirSync('./slashcmds').filter(x => x.endsWith('.js'))
+  
+      if (cmds.includes(`${cmd}.js`)) {
+        let exportVariable;
+        eval(
+          require('fs').readFileSync(`./slashcmds/${cmd}.js`).toString()
+            .replaceAll('module.exports', 'exportVariable')
+            .replaceAll('exports', 'exportVariable')
+        )
+  
+        exportVariable.execute(socket, args, ws, send)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  })
 	socket.on("UserMessage", async message => {
-		let resp = await require("node-fetch")("https://replit.com/graphql", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"User-Agent": "Mozilla/5.0",
-				"X-Requested-With": "2Chat",
-				Referer: "https://replit.com"
-			},
-			body: JSON.stringify({
-				query:
-					"query userByUsername($username: String!) { user: userByUsername(username: $username) { image } }",
-				variables: { username: message.author }
-			})
-		}).then(res => res.json());
-
-		let data = resp.data || {};
-		message.pfp = data.user
-			? data.user.image
-			: "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256";
+		message.pfp = socket.handshake.headers['x-replit-user-profile-image'] || "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256";
 
 		const titles = {
-			"bddy": "[Developer] [kool kid] [Verified] ",
-			"haroon": "[Developer] [Verified] ",
-			"Apollo130": "[Tester] ",
-			"zplusfour": "[Tester] "
+			"bddy": "<span id='bottag' style='margin-left: 5px'>Developer</span>",
+			"haroon": "<span id='bottag' style='margin-left: 5px'>Developer</span>",
+      "Cleverbot": `<span id="bottag" style="margin-left: 5px">Verified Bot</span>`
 		}
 
 		const emojis = {
@@ -65,29 +129,21 @@ ws.on("connection", socket => {
 			"haroon": "https://storage.googleapis.com/replit/images/1655396152278_c41bd5ce982f9e3a14d27f041d89edbc.png"
 		}
 		// wiat confusion
-		const username = message.author
+		const username = socket.handshake.headers['x-replit-user-name']
 		const msg = message.content
 
 		for (let key in emojis) {
 			message.content = message.content.replaceAll(`:${key}:`, `<img src='${emojis[key]}' class='emoji' />`)
 		}
 
-		message.author = `${titles[message.author] || ''}${message.author}`
+		message.author = `${socket.handshake.headers['x-replit-user-name']}&nbsp;&nbsp;${titles[socket.handshake.headers['x-replit-user-name']] || ''}${betaTesters.includes(socket.handshake.headers['x-replit-user-name']) ? '<span id="bottag" style="margin-left: 5px">Beta Tester</span>' : ''}`
 
 		// message.content = message.content.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
-		message.content = message.content.replaceAll("style=", "")
-		message.content = message.content.replaceAll("style =", "")
-		message.content = message.content.replaceAll("style = ", "")
-		message.content = message.content.replaceAll("<script>", "")
-		message.content = message.content.replaceAll("</script>", "")
-		message.content = message.content.replaceAll("<style>", "")
-		message.content = message.content.replaceAll("</style>", "")
-		message.content = message.content.replaceAll("onclick", "")
-		message.content = message.content.replaceAll("keydown", "")
-		message.content = message.content.replaceAll("keyup", "")
-		message.content = message.content.replaceAll("onload", "")
+		message.content = DOMPurify.sanitize(message.content)
 		message.content = marked.parse(message.content)
-		message.content = filter.clean(message.content);
+		dontsaythat.forEach(function(word) {
+  		message.content = message.content.replace(new RegExp(word, 'gi'), '****')
+    })
 
 		// doing emojis
 
@@ -95,7 +151,26 @@ ws.on("connection", socket => {
 
 		// ending emojis
 
-		ws.emit("UserMessage", message);
+    let shadowBans = await db.get('shadowBans')
+
+    message.raw = {}
+
+    message.raw.content = msg
+    message.raw.author = username
+
+    if (Object.keys(shadowBans).includes(username)) {
+      let adminSocks = (await io.fetchSockets()).filter(x => ['3586618', '3670753'].includes(x.handshake.headers['x-replit-user-id']))
+
+      if (adminSocks.length) {
+        adminSocks.forEach(sock => {
+          sock.emit("UserMessage", message, true)
+        })
+      }
+      
+      return socket.emit("UserMessage", message)
+    }
+
+		ws.to(message.channel).emit("UserMessage", message);
 		await db.push('messages-' + message.channel, message)
 		console.log(`(#${message.channel}) ${username}: ${msg}`)
 	});
@@ -104,8 +179,6 @@ ws.on("connection", socket => {
 app.use(express.static("public"));
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
-
-let whitelist = ["bddy", "zplusfour", "RayhanADev", "haroon", 'discordaddict'];
 
 app.get("/", async (req, res) => {
 	let cachedMessages = await db.get('messages-lobby');
@@ -116,9 +189,14 @@ app.get("/", async (req, res) => {
 			name: username
 		},
 		cpt,
-		cachedMessages
+		cachedMessages,
+		name
 	});
 });
+
+app.get('/login', (req, res) => {
+  res.redirect('https://replit.com/auth_with_repl_site?domain=2chat.bddy.repl.co')
+})
 
 app.get("/channels/:channel", async (req, res) => {
 	let cachedMessages = await db.get('messages-' + req.params.channel);
@@ -130,25 +208,15 @@ app.get("/channels/:channel", async (req, res) => {
 			name: username
 		},
 		cpt,
-		cachedMessages
+		cachedMessages,
+		name
 	});
 });
 
-// app.get("/channels/example", async (req, res) => {
-// 	let cachedMessages = await db.get('messages-example');
-// 	let cpt = req.query['compact'] || true
-// 	const username = req.get("X-Replit-User-Name") || null;
-// 	res.render("channels/example", {
-// 		user: {
-// 			name: username
-// 		},
-// 		cpt,
-// 		cachedMessages
-// 	});
-// });
-
 app.get('/download', (req, res) => {
-	res.render('download')
+	res.render('download', {
+		name
+	})
 })
 
 app.get("/lg", (req, res) => {
@@ -161,7 +229,11 @@ app.get("/lg", (req, res) => {
 // Start Voice Chat
 let VoiceChat_Whitelisted_Users = [
 	"haroon",
-	"bddy"
+	"bddy",
+	"Platformer22",
+	"zplusfour",
+	"21natzil",
+	"IroncladDev"
 ]
 
 const VoiceChat_Current_Users = new Map();
@@ -174,70 +246,71 @@ app.get("/voice/:channel", async (req, res) => {
 		channel: req.params.channel,
 		user: {
 			name: username
-		}
+		},
+		name
 	});
 });
 
-ws.on('connection', async (socket) => {
+voiceNsp.on('connection', async (socket) => {
 	if (!socket.handshake.headers['x-replit-user-id']) return;
-  let resp = await require("node-fetch")("https://replit.com/graphql", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"User-Agent": "Mozilla/5.0",
-				"X-Requested-With": "2chat",
-				Referer: "https://replit.com"
-			},
-			body: JSON.stringify({
-				query:
-					"query userByUsername($username: String!) { user: userByUsername(username: $username) { image } }",
-				variables: { username: socket.handshake.headers['x-replit-user-name'] }
-			})
-		}).then(res => res.json());
-  let data = resp.data || {};
 	let user = {
 		id: socket.handshake.headers['x-replit-user-id'],
 		name: socket.handshake.headers['x-replit-user-name'],
-    img: data.user
-			? data.user.image
-			: "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256"
+		img: socket.handshake.headers['x-replit-user-profile-image'] || "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256"
 	}
 	let curChannel;
 	socket.on('voice.join', (channel) => {
 		socket.join(channel)
 		curChannel = channel
-    if (!VoiceChat_Current_Users.has(channel)) VoiceChat_Current_Users.set(channel, new Map());
-    let curUsers = VoiceChat_Current_Users.get(channel)
+		if (!VoiceChat_Current_Users.has(channel)) VoiceChat_Current_Users.set(channel, new Map());
+		let curUsers = VoiceChat_Current_Users.get(channel)
 		socket.emit('voice.users', Object.fromEntries(curUsers))
-		ws.to(channel).emit('voice.join', user)
+		voiceNsp.to(channel).emit('voice.join', user)
 		curUsers.set(socket.id, user)
-    let UserState = Object.assign(user, user)
-    UserState.muted = UserState.deafened = false
+		let UserState = Object.assign(user, user)
+		UserState.muted = UserState.deafened = false
 		VoiceChat_User_States.set(socket.id, UserState)
 	});
 
 	socket.on('voice.data', (dataUri) => {
-    let deaf = Object.keys(Object.fromEntries(VoiceChat_User_States)).filter(x => VoiceChat_User_States.get(x).deafened && VoiceChat_Current_Users.get(curChannel).has(x))
-		ws.except(socket.id).except(deaf).to(curChannel).emit('voice.data', user, dataUri)
+		if (VoiceChat_User_States.get(socket.id).muted) return;
+		let deaf = Object.keys(Object.fromEntries(VoiceChat_User_States)).filter(x => VoiceChat_User_States.get(x).deafened && VoiceChat_Current_Users.get(curChannel).has(x))
+		voiceNsp.except(socket.id).except(deaf).to(curChannel).emit('voice.data', user, dataUri)
 	})
 
-  socket.on('voice.mute', () => {
-    let UserState = VoiceChat_User_States.get(socket.id)
+	socket.on('voice.mute', (state) => {
+		let UserState = VoiceChat_User_States.get(socket.id)
 
-    UserState.muted = !UserState.muted
+		UserState.muted = state
 
-    VoiceChat_User_States.set(socket.id, UserState)
-  })
+		VoiceChat_User_States.set(socket.id, UserState)
+	})
+
+	socket.on('voice.deaf', (state) => {
+		let UserState = VoiceChat_User_States.get(socket.id)
+
+		UserState.deafened = state
+
+		VoiceChat_User_States.set(socket.id, UserState)
+	})
 
 	socket.on('voice.leave', () => {
 		socket.leave(curChannel)
-		ws.except(socket.id).to(curChannel).emit('voice.leave', user)
-		VoiceChat_Current_Users.delete(socket.id)
+		voiceNsp.except(socket.id).to(curChannel).emit('voice.leave', user)
+		try {
+			(VoiceChat_Current_Users.get(curChannel) || new Map()).delete(socket.id)
+		} catch (err) {
+			console.log(err)
+		}
 	})
 	socket.on('disconnecting', () => {
 		socket.leave(curChannel)
-		ws.except(socket.id).to(curChannel).emit('voice.leave', user)
-		VoiceChat_Current_Users.delete(socket.id)
+		voiceNsp.except(socket.id).to(curChannel).emit('voice.leave', user)
+		try {
+			(VoiceChat_Current_Users.get(curChannel) || new Map()).delete(socket.id)
+		} catch (err) {
+			console.log(err)
+		}
 	})
 })
 
@@ -251,7 +324,7 @@ ws.on('connection', async (socket) => {
 
 app.get('/logout', (req, res) => {
 	res.cookie("REPL_AUTH", "")
-  res.redirect('/')
+	res.redirect('/')
 })
 
 
@@ -259,8 +332,11 @@ app.get('/logout', (req, res) => {
 
 app.get("*", (req, res) => {
 	res.render('404', {
-		url: req.url
+		url: req.url,
+		name
 	})
 })
 
 server.listen(80);
+
+process.stderr.pipe(require('fs').createWriteStream('./err.txt'))

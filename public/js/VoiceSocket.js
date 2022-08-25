@@ -1,12 +1,16 @@
 (async function() {
-  const socket = io()
+  const socket = io('/voice')
   
-	this.testTime = 260
+	let Mute_Checkbox = document.getElementById("Mute_Checkbox");
+	let Deafen_Checkbox = document.getElementById("Deafen_Checkbox");
+	
+	this.testTime = 300
 	let stream;
 
   socket.emit('voice.join', document.currentScript.getAttribute('c'))
 
   try {
+		if (Mute_Checkbox.checked == true) return;
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mediaRecorder = new MediaRecorder(stream)
   	mediaRecorder.start()
@@ -29,7 +33,9 @@
     // Microphone permissions disabled
   }
 
+	
   socket.on('voice.data', (user, dataUri) => {
+		if (Deafen_Checkbox.checked == true) return;
     console.log('Recieved voice data from', user.name)
     const aud = new Audio(dataUri)
     aud.play();

@@ -16,7 +16,7 @@
 			}
 		</style>
 	<% } %>
-  <title>2chat</title>
+  <title><%= name %></title>
 </head>
 
 <body>
@@ -25,7 +25,7 @@
 			<h2>Join Room</h2>
 			<p>You can type any thing below, and it will redirect you. Even if the channel is non existant, it will create it!</p>
     	<input id="rmcd" class="rm" placeholder="Room Name" type="text">
-    	<input class="rm" type="submit" value="Join" onclick="window.location.href = 'https://2chat.bddy.repl.co/channels/' + document.getElementById('rmcd').value">
+    	<input class="rm" type="submit" value="Join" onclick="window.location.href = '/channels/' + document.getElementById('rmcd').value">
     <input class="button" onclick="document.getElementById('joinroom-wrapper').style.display = 'none'" value="Close" style="text-align:center;"></input>
 		</div>	
 	</div>
@@ -34,7 +34,7 @@
 			<h2>Join VC</h2>
 			<p>You can type any thing below, and it will redirect you. Even if the voice chat is non existant, it will create it!</p>
     	<input id="rmcdd" class="rm" placeholder="Voice Chat Name" type="text">
-    	<input class="rm" type="submit" value="Join" onclick="window.location.href = 'https://2chat.bddy.repl.co/voice/' + document.getElementById('rmcdd').value">
+    	<input class="rm" type="submit" value="Join" onclick="window.location.href = '/voice/' + document.getElementById('rmcdd').value">
     <input class="button" onclick="document.getElementById('joinvc-wrapper').style.display = 'none'" value="Close" style="text-align:center;"></input>
 		</div>	
 	</div>
@@ -42,33 +42,38 @@
 				<span style="cursor:pointer;" onclick="togglenav()" class="material-symbols-outlined">
 menu
 </span>
-    <h3>2chat</h3>
+		<div id="navitems">
+		
+    <h3><%= name %></h3>
     <p>Welcome, <%= user.name %></p>
     <a class="button" href="/channels/lobby">#lobby</a>
     <a class="button" href="/channels/example">#example</a>
     <a class="button" href="/channels/code-help">#code-help</a>
     <a class="button" onclick="document.getElementById('joinroom-wrapper').style.display = 'flex'">Join Room</a>
     <a class="button" onclick="document.getElementById('joinvc-wrapper').style.display = 'flex'">Join Voice</a>
-		<hr />
+		<hr>
+        <label>Change Theme</label>
+<select id="ThemeSwitchSelectMenu">
+            <option id="sel">Select</option>
+            <option>Furret CSS</option>
+        <option>Replit</option><option>Discord</option></select>
+    <hr>
     <a class="button" id="downloadapp" href="/download">Download App</a>
+		</div>
+			
   </nav>
 
 
 
   <div class="container" id="container">
     <div id="chat_wrapper">
-			Welcome to 2Chat!
+			Welcome to <%= name %>!
 		</div>
   <div class="login" id="login">
     <script authed="location.reload()" src="https://auth.util.repl.co/script.js"></script>
 
   </div>
-  <script>
-    function changeTheme(theme = "furretcss") {
-      return 'Selected theme ' + theme;
-    }
-  </script>
-  <script src="https://2chat.bddy.repl.co/js/main.js"></script>
+  <script src="https://<%= name %>.bddy.repl.co/js/main.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 </body>
 

@@ -7,16 +7,16 @@ const client = new Client({
   transport: 'ipc',
 });
 
-
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    autoHideMenuBar: true, 
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
-    }
+    },
+    icon: __dirname + '/icon.ico'
   })
 
   // and load the index.html of the app.
@@ -56,14 +56,11 @@ app.on('window-all-closed', function () {
 const RichPresence = {
   details: 'On the home page',
   state: 'Idling',
+  largeImageKey: '2chat',
+  largeImageText: '2chat'
 }
 
-const axios = require('axios');
-
 ipcMain.handle('editRPC', async (_, pathname) => {
-	const { data: RPCData } = await axios.get("https://2chat.bddy.repl.co/RPCData.json")
-
-  // Now we need to somehow see if they're talking or typing. Thanks for giving me more work!
   RichPresence.details = {'voice': 'In a voice channel', 'channels': 'In a text channel'}[pathname.slice(1).split('/')[0]] || 'On the home page'
 
   RichPresence.state = {'channels': 'Chatting in #' + pathname.slice(1).split('/')[1], 'voice': 'Talking in ' + pathname.slice(1).split('/')[1]}[pathname.slice(1).split('/')[0]] || 'Idling'

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" /><link href="/css/Home.css" rel="stylesheet" />
-  <title>2chat</title>
+  <title><%= name %></title>
 </head>
 
 <body>
@@ -15,7 +15,7 @@
 			<h2>Join Room</h2>
 			<p>You can type any thing below, and it will redirect you. Even if the channel is non existant, it will create it!</p>
     	<input id="rmcd" class="rm" placeholder="Room Name" type="text">
-    	<input class="rm" type="submit" value="Join" onclick="window.location.href = 'https://2chat.bddy.repl.co/channels/' + document.getElementById('rmcd').value">
+    	<input class="rm" type="submit" value="Join" onclick="window.location.href = '/channels/' + document.getElementById('rmcd').value">
     <input class="button" onclick="document.getElementById('joinroom-wrapper').style.display = 'none'" value="Close" style="text-align:center;"></input>
 		</div>	
 	</div>
@@ -24,7 +24,7 @@
 			<h2>Join VC</h2>
 			<p>You can type any thing below, and it will redirect you. Even if the voice chat is non existant, it will create it!</p>
     	<input id="rmcdd" class="rm" placeholder="Voice Chat Name" type="text">
-    	<input class="rm" type="submit" value="Join" onclick="window.location.href = 'https://2chat.bddy.repl.co/voice/' + document.getElementById('rmcdd').value">
+    	<input class="rm" type="submit" value="Join" onclick="window.location.href = '/voice/' + document.getElementById('rmcdd').value">
     <input class="button" onclick="document.getElementById('joinvc-wrapper').style.display = 'none'" value="Close" style="text-align:center;"></input>
 		</div>	
 	</div>
@@ -32,14 +32,23 @@
 				<span style="cursor:pointer;" onclick="togglenav()" class="material-symbols-outlined">
 menu
 </span>
-    <h3>2chat Voice</h3>
+		<div id="navitems">
+		
+    <h3><%= name %> Voice</h3>
     <p>Welcome, <%= user.name %></p>
     <a class="button <%= channel == 'General' ? 'active' : '' %>" href="/voice/General">General</a>
     <a class="button <%= channel == 'Example' ? 'active' : '' %>" href="/voice/Example">Example</a>
     <a class="button" onclick="document.getElementById('joinroom-wrapper').style.display = 'flex'">Join Room</a>
     <a class="button" onclick="document.getElementById('joinvc-wrapper').style.display = 'flex'">Join Voice</a>
-		<hr />
+		<hr>
+        <label>Change Theme</label>
+<select id="ThemeSwitchSelectMenu">
+            <option id="sel">Select</option>
+            <option>Furret CSS</option>
+        <option>Replit</option><option>Discord</option></select>
+    <hr>
     <a class="button" id="downloadapp" href="/download">Download App</a>
+		</div>
   </nav>
 
 
@@ -56,20 +65,35 @@ menu
           Speaking: <img class="user speaking" id="USER_ID" src="USER_PFP" alt="USER_NAME"/>
         -->
       </div>
-    </div>
+			<div style="
+				display: flex;
+				flex-direction: row;
+				gap: 45px;
+				justify-content: center;
+				margin-top: 15px;
+				width: 100%;">
+				<label class="mute_form_control">
+					<span>Mute</span>
+					<input id="Mute_Checkbox" type="checkbox" />
+				</label>
+				<label class="mute_form_control">
+					<span>Deafen</span>
+					<input id="Deafen_Checkbox" type="checkbox" />
+				</label>
+			</div>
+<!-- 			<div style="width: auto;">
+				<label for="mutebutn">mute</label>
+				<input name="mutebutn" type="checkbox" id="mute_checkbox" />
+			</div> -->
+		</div>
   </div>
   <div class="login" id="login">
     <script authed="location.reload()" src="https://auth.util.repl.co/script.js"></script>
 
   </div>
-  <script>
-    function changeTheme(theme = "furretcss") {
-      return 'Selected theme ' + theme;
-    }
-  </script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="https://2chat.bddy.repl.co/js/main.js"></script>
-  <script c="<%= channel %>" src="https://2chat.bddy.repl.co/js/VoiceSocket.js"></script>
+  <script src="/js/main.js"></script>
+  <script c="<%= channel %>" src="/js/VoiceSocket.js"></script>
 </body>
 
 </html>

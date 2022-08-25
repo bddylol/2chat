@@ -8,7 +8,7 @@
     --primary-3: #bfbfbf;
     --accent-1: #59a6b8;
     --accent-2: #107fae;
-    --accent-3: #3b6678;
+    --accent-3: #0c6388;
     --background-1: #41405c;
     --background-2p5: #302f46;
     --background-2: #272639;
@@ -22,13 +22,20 @@
     --font-monospace: "DM Mono",monospace;
 }
 
+.HAMBURGER_MENU_ICON {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	margin-bottom: 10px;
+}
+
 * {
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
 	font-family: var(--font-display);
 	color: var(--primary-2);
-	transition: all 300ms;
+	transition: all 225ms;
 }
 
 html, body {
@@ -43,7 +50,6 @@ html, body {
 nav {
 	display: flex;
 	flex-direction: column;
-	padding: 15px;
 
 	gap: 5px;
 
@@ -52,16 +58,39 @@ nav {
 	overflow-y: auto;
 }
 
+nav span {
+/* 	padding: 21px 15px; */
+	padding-top: 21px;
+	padding-left: 15px;
+	padding-right: 5px;
+}
+
+nav div {
+	display: flex;
+	flex-direction: column;
+	padding: 15px;
+
+	gap: 5px;
+
+	height: 100%;
+	width: 100%;
+	overflow-y: auto;
+}
+
 nav hr {
 	border: none;
 	border-top: 1px solid var(--background-1);
+}
+
+.material-symbols-outlined {
+	user-select: none;
 }
 
 .container {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	width: calc(100% - 200px);
+	width: 100%;
 }
 
 .login {
@@ -96,6 +125,8 @@ nav hr {
 	align-items: center;
 	height: 35px;
 	width: 100%;
+	user-select: none;
+	
 }
 
 .container #chat_wrapper #chat_header .desc {
@@ -129,6 +160,9 @@ nav hr {
 .container #chat_wrapper #chat #message div #author {
 	font-size: 18px;
 	font-weight: 500;
+	    display: flex;
+    align-items: center;
+    flex-direction: row;
 }
 
 .container #chat_wrapper #chat #message div #date {
@@ -146,7 +180,7 @@ nav hr {
 }
 
 .container #chat_inputs input[type="text"] {
-	width: calc(100% - 105px);
+	width: 100%;
 	background: var(--background-2);
 	border: 0px;
 	border-radius: 3px;
@@ -189,8 +223,9 @@ nav hr {
     color: var(--primary-2);
     background: var(--accent-2);
     border-radius: 5px;
-    margin: 0px 10px;
     font-size: 12px;
+	margin-right: 10px;
+	user-select: none;
 }
 
 	img.pfp {
@@ -282,4 +317,83 @@ img.user {
 	align-items: center;
 	justify-content: center;
 	gap: 5px;
+}
+
+.download_2chat_button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 15px 20px;
+	width: 205px;
+	text-decoration: none;
+	background: var(--accent-2);
+}
+
+.download_2chat_button:hover {
+	background: var(--accent-3);
+}
+
+.mute_form_control {
+    font-family: system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.1;
+    display: flex;
+    width: 35px;
+    grid-template-columns: 1em auto;
+    gap: 0.5em;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.mute_form_control input {
+  /* Add if not using autoprefixer */
+  -webkit-appearance: none;
+  /* Remove most all native input styles */
+  appearance: none;
+  /* For iOS < 15 */
+  background-color: var(--form-background);
+  /* Not removed via appearance */
+  margin: 0;
+
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+
+  display: grid;
+  place-content: center;
+	border-radius: 50%;
+}
+
+.mute_form_control input::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+	  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transition: 120ms transform ease-in-out;
+	border-radius: 50%;
+  box-shadow: inset 1em 1em var(--accent-2);
+}
+
+.mute_form_control input:checked::before {
+  transform: scale(1);
+}
+
+#ThemeSwitchSelectMenu {
+	color: #000;
+	outline: 0;
+	border-radius: 7px;
+	padding: 5px 10px;
+}
+#ThemeSwitchSelectMenu option {
+	color: #000;
+	outline: 0;
+	border-radius: 7px;
+	padding: 5px 10px;
 }
