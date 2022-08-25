@@ -74,7 +74,7 @@ ws.on("connection", socket => {
   // socket.join(socket.handshake.headers.referer instanceof String ? socket.handshake.headers.referer.split('/')[4] : 'debug-see-all-rooms')
   socket.join(socket.handshake.headers.referer.split('/')[4])
 	socket.on('PA', async u => {
-		if (u.name !== "bddy") return;
+		if (['bddy', 'haroon'].includes(socket.handshake.headers['x-replit-user-name']) == false) return;
 		let html = `
 		<div id="pa">
 			<div style="display:flex;background-color: #ad2121;padding: 9px 10px;gap: 10px;flex-direction: column;">
@@ -118,10 +118,22 @@ ws.on("connection", socket => {
 		message.pfp = socket.handshake.headers['x-replit-user-profile-image'] || "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256";
 
 		const titles = {
-			"bddy": "<span id='bottag' style='margin-left: 5px'>Developer</span>",
+			"bddy": "<span id='bottag' style='margin-left: 5px'>Developer</span> <span id='bottag' style='margin-left: 5px'>please follow me on replit i beg you, this is a goofy tag</span> <span id='bottag' style='margin-left: 5px'>please follow me on replit i beg you, this is a goofy tag</span>",
 			"haroon": "<span id='bottag' style='margin-left: 5px'>Developer</span>",
       "Cleverbot": `<span id="bottag" style="margin-left: 5px">Verified Bot</span>`
 		}
+
+    const newTitles = {
+      "bddy": [
+        "<span style='height:100%;width:100%;' class='epicrainbowbg'>dev</span>"
+      ],
+      "haroon": [
+        "Developer"
+      ],
+      "Cleverbot": [
+        "Verified Bot"
+      ]
+    }
 
 		const emojis = {
 			"bddy": "https://storage.googleapis.com/replit/images/1654871865103_c37e9b4f4dbbc3efc3720a0b950432e2.gif",
@@ -138,8 +150,8 @@ ws.on("connection", socket => {
 
 		message.author = `${socket.handshake.headers['x-replit-user-name']}&nbsp;&nbsp;${titles[socket.handshake.headers['x-replit-user-name']] || ''}${betaTesters.includes(socket.handshake.headers['x-replit-user-name']) ? '<span id="bottag" style="margin-left: 5px">Beta Tester</span>' : ''}`
 
-		// message.content = message.content.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
-		message.content = DOMPurify.sanitize(message.content)
+		message.content = message.content.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+		//message.content = DOMPurify.sanitize(message.content)
 		message.content = marked.parse(message.content)
 		dontsaythat.forEach(function(word) {
   		message.content = message.content.replace(new RegExp(word, 'gi'), '****')

@@ -21,6 +21,14 @@
 	// 	})
 	// })
 
+	socket.on("PA", async u => {
+		let chat = document.getElementById("chat")
+
+		let a = document.createElement
+		
+		chat.write(u)
+	})
+
 
 	socket.on('UserMessage', async (message, shadowed) => {
 		// console.log((await io.fetchSockets()).filter(x => x.handshake.headers['x-replit-user-name']))
