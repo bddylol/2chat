@@ -18,11 +18,11 @@ const { marked } = require('marked');
 const db = new QuickDB();
 const ejs = require("ejs");
 const users = [];
-// const Filter = require('bad-words'),
-// 	filter = new Filter({ emptyList: true });
+const Filter = require('bad-words'),
+	filter = new Filter({ emptyList: true });
 
-// filter.addWords(...dontsaythat)
-// filter.removeWords('god', 'poop', 'crap', 'goddamn')
+filter.addWords(...dontsaythat)
+filter.removeWords('god', 'poop', 'crap', 'goddamn', 'scrap')
 
 const { name } = require('./package.json')
 
@@ -171,7 +171,8 @@ ws.on("connection", socket => {
     }
 
 		ws.to(message.channel).emit("UserMessage", message);
-		await db.push('messages-' + message.channel, message)
+		await db.push('messages-' + message.channel, message);
+		if(message.channel == "spam") return;
 		console.log(`(#${message.channel}) ${username}: ${msg}`)
 	});
 });
