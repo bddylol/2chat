@@ -24,9 +24,13 @@
 	socket.on("PA", async u => {
 		let chat = document.getElementById("chat")
 
-		let a = document.createElement
+		let a = document.createElement("div");
+
+		a.innerHTML = u
+
+		chat.appendChild(a)
+		chat.scrollTo(0, chat.scrollHeight);
 		
-		chat.write(u)
 	})
 
 
