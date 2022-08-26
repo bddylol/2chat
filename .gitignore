@@ -2,6 +2,7 @@ node_modules
 json.sqlite
 package-lock.json
 .breakpoints
+.github/**/* # Replit hates the .github folder for some reason.
 
 # Logs
 logs
