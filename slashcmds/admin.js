@@ -5,11 +5,11 @@ const { marked } = require('marked');
 module.exports = {
   execute: async (socket, args, io, send) => {
 
-    if (!['3586618', '3670753'].includes(socket.handshake.headers['x-replit-user-id'])) return send(`You can't use this command.`)
+    if (!['3586618', '3670753', '5431535'].includes(socket.handshake.headers['x-replit-user-id'])) return send(`You can't use this command.`)
 
-    if (!args.length) return send(`That's not a valid sub-command! Possible subcommands are:<br><br><pre><code>/admin warn</code></pre><br><pre><code>/admin (un)mute</code></pre><br><pre><code>/admin (un)ban<br></code></pre><br><br>Alternatively, you can visit the <code><a href="https://2chat.bddy.repl.co/admin">Admin Panel</a></code>.`)
+    if (!args.length) return send(`That's not a valid sub-command! Possible subcommands are:<br><br><pre><code>/admin warn</code></pre><br><pre><code>/admin (un)mute</code></pre><br><pre><code>/admin (un)ban<br></code></pre>`)
 
-    if (!['warn', 'mute', 'ban', 'unmute', 'unban'].includes(args[0])) return send(`That's not a valid sub-command! Possible subcommands are:<br><br><pre><code>/admin warn</code></pre><br><pre><code>/admin (un)mute</code></pre><br><pre><code>/admin (un)ban<br></code></pre><br><br>Alternatively, you can visit the <code><a href="https://2chat.bddy.repl.co/admin">Admin Panel</a></code>.`)
+    if (!['warn', 'mute', 'ban', 'unmute', 'unban'].includes(args[0])) return send(`That's not a valid sub-command! Possible subcommands are:<br><br><pre><code>/admin warn</code></pre><br><pre><code>/admin (un)mute</code></pre><br><pre><code>/admin (un)ban<br></code></pre>`)
 
     let subcommand = args.shift();
 

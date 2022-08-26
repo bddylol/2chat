@@ -10,7 +10,7 @@
   socket.emit('voice.join', document.currentScript.getAttribute('c'))
 
   try {
-		if (Mute_Checkbox.checked == true) return;
+		if (Mute_Checkbox.checked == true || Deafen_Checkbox.checked == true) return;
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mediaRecorder = new MediaRecorder(stream)
   	mediaRecorder.start()

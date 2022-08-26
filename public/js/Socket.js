@@ -70,6 +70,11 @@
 		</div>
 		<p id="text">${message.content}</p>
 		`
+
+		if(message.content.includes(`@${username}`)) {
+			m.style.background = "#36331b"
+			new Audio('https://2chat.bddy.repl.co/audio/receivemention.wav').play()
+		}
 		chat.appendChild(m)
 		chat.scrollTo(0, chat.scrollHeight);
 	});
@@ -97,6 +102,9 @@
 			return
 		}
 
+			new Audio('https://2chat.bddy.repl.co/audio/sendmessage.wav').play()
+		
+
 		socket.emit("UserMessage", { channel: selem.getAttribute('c'), author: username, date: new Date().getTime(), content: ipt.value });
 		ipt.value = ""
 	}
@@ -123,7 +131,7 @@
   			<img class="pfp" src="https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256" />
   			<span id="author">System <span id="bottag" style="margin-left: 10px">Verified Bot</span></span>
   		</div>
-  		<p id="text">You were kicked from 2chat by an admin.</p>
+  		<p id="text">The websocket has been disconnected, or you have been kicked by an admin.</p>
   		`
 			chat.appendChild(m)
 			chat.scrollTo(0, chat.scrollHeight);

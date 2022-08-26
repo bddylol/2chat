@@ -19,7 +19,14 @@ const db = new QuickDB();
 const ejs = require("ejs");
 const users = [];
 const Filter = require('bad-words'),
-	filter = new Filter({ emptyList: true });
+	filter = new Filter();
+
+
+// marked.use({
+// 	tokenizer: {
+		
+// 	}
+// })
 
 filter.addWords(...dontsaythat)
 filter.removeWords('god', 'poop', 'crap', 'goddamn', 'scrap')
@@ -30,7 +37,7 @@ instrument(ws, {
 	auth: {
 		type: "basic",
 		username: "admin",
-		password: "$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS"
+		password: require('bcrypt').hashSync(process.env.ADMIN_UI_PASSWORD, 10)
 	},
 });
 
@@ -53,7 +60,10 @@ let betaTesters = [
 	"IroncladDev",
 	"Cleverbot",
 	"connor",
-	"RayhanADev"
+	"RayhanADev",
+	"apollo130",
+	"DillonB07",
+	"yeshsgsvgs"
 ]
 
 const createDOMPurify = require('dompurify');
@@ -63,6 +73,7 @@ const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
 ws.on("connection", socket => {
+  if (!socket.handshake.headers['x-replit-user-name']) socket.disconnect();
 	// socket.handshake.headers.referer.split('/')[4]
 	// if (socket.handshake.headers.referer instanceof String && socket.handshake.headers.referer.split('/')[4] == "debug-see-all-rooms") return socket.emit("UserMessage", { 
 	//     channel: "debug-see-all-rooms",
@@ -74,18 +85,50 @@ ws.on("connection", socket => {
 
 	// socket.join(socket.handshake.headers.referer instanceof String ? socket.handshake.headers.referer.split('/')[4] : 'debug-see-all-rooms')
 	socket.join(socket.handshake.headers.referer.split('/')[4])
+  if (["DazaSealos", "EastonPrewitt1"].includes(socket.handshake.headers['x-replit-user-name'])) {return socket.disconnect();}
 	socket.on('reload', async u => {
 		if (['bddy', 'haroon'].includes(socket.handshake.headers['x-replit-user-name']) == false) return;
-		ws.emit('reload', html)
+		ws.emit('reload')
 	})
 	socket.on('PA', async u => {
 		if (['bddy', 'haroon'].includes(socket.handshake.headers['x-replit-user-name']) == false) return;
 		let html = `
-		<div id="pa">
-			<div style="display:flex;background-color: #ad2121;padding: 9px 10px;gap: 10px;flex-direction: column;">
-	    <h2>Public Announcement</h2>
-		<span>${u.m}</span></div>
-		</div>
+<div id="PA" style="
+    position: fixed;
+    background: rgba(0,0,0,.3);
+    height: 100%;
+    width: 100%;
+    ">
+        <div style="
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            top: 50%;
+            left: 50%;
+            border-radius: 7px;
+            transform: translate(-50%, -50%);
+            width: 50%;
+            /* height: 35%; */
+            background:
+            var(--background-2);
+            padding: 15px;
+            ">
+            <h2>Public Announcement from</h2>
+            <p>${u.m}</p>
+    <a style="
+        width: 100%;
+        height: 25px;
+        border-radius: 7px;
+        background: var(--accent-1);
+        display: flex;
+        align-items: center;
+        padding: 19px;
+        justify-content: center;
+        cursor: pointer;
+        " onclick="document.getElementById('PA').remove()">Close</a>
+            </div>
+    </div>
 	`
 		ws.emit('PA', html)
 	})
@@ -122,23 +165,45 @@ ws.on("connection", socket => {
 	socket.on("UserMessage", async message => {
 		message.pfp = socket.handshake.headers['x-replit-user-profile-image'] || "https://www.gravatar.com/avatar/70f68d9254a26e13edbd59e97869969b?d=https://repl.it/public/images/evalbot/evalbot_24.png&s=256";
 
-		const titles = {
-			"bddy": "<span id='bottag' style='margin-left: 5px' class='epicrainbowbg'>Developer</span>",
-			"haroon": "<span id='bottag' style='margin-left: 5px'>Developer</span>",
-			"Cleverbot": `<span id="bottag" style="margin-left: 5px">Verified Bot</span>`,
-			"RayhanADev": "<span id='bottag' style='margin-left: 5px'>Furret.CSS Theme Creator</span>"
-		}
-
 		const newTitles = {
 			"bddy": [
-				"<span style='height:100%;width:100%;' class='epicrainbowbg'>dev</span>"
-			],
+        "Lead Dev",
+        "Loyal",
+				`<img src="https://assets.tumblr.com/pop/src/assets/images/download-on-the-appstore/en-8c4986ee.svg" width="100px" height="20px" />`,
+				"Admin"
+      ],
 			"haroon": [
-				"Developer"
-			],
-			"Cleverbot": [
-				"Verified Bot"
-			]
+        "Lead Dev",
+        "Loyal",
+				"Admin"
+      ],
+      "Cleverbot": [
+        "Verified Bot",
+        "Loyal"
+      ],
+      "RayhanADev": [
+        "Furret.CSS Theme Creator",
+        "Loyal"
+      ],
+      "HyperHacker": [
+        "Loyal"
+      ],
+      "Bookie0": [
+        "Loyal"
+      ],
+      "21natzil": [
+        "Loyal",
+        `<span style="display:flex;align-items:center;">Zwack&nbsp;<img src='https://cdn.discordapp.com/emojis/451912829142827008.webp?size=16'></span>`
+      ],
+      "DillonB07": [
+        "Mac App Builder",
+        "Loyal",
+        "Helper",
+				"Admin"
+      ],
+      "redsox200729": [
+        "Loyal"
+      ]
 		}
 
 		const emojis = {
@@ -150,18 +215,18 @@ ws.on("connection", socket => {
 		const username = socket.handshake.headers['x-replit-user-name']
 		const msg = message.content
 
-		for (let key in emojis) {
-			message.content = message.content.replaceAll(`:${key}:`, `<img src='${emojis[key]}' class='emoji' />`)
-		}
+    let titles = newTitles[username] ? '<span style="margin-left:5px;" id="bottag">'+newTitles[username].join('</span><span style="margin-left:5px;" id="bottag">')+'</span>' : ''
 
-		message.author = `${socket.handshake.headers['x-replit-user-name']}&nbsp;&nbsp;${titles[socket.handshake.headers['x-replit-user-name']] || ''}${betaTesters.includes(socket.handshake.headers['x-replit-user-name']) ? '<span id="bottag" style="margin-left: 5px">Beta Tester</span>' : ''}`
+		message.author = `${socket.handshake.headers['x-replit-user-name']}&nbsp;&nbsp;${titles}${betaTesters.includes(socket.handshake.headers['x-replit-user-name']) ? '<span id="bottag" style="margin-left: 5px">Beta Tester</span>' : ''}`
 
 		message.content = message.content.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+
+    for (let key in emojis) {
+			message.content = message.content.replaceAll(`:${key}:`, `<img src='${emojis[key]}' class='emoji' />`)
+		}
 		//message.content = DOMPurify.sanitize(message.content)
 		message.content = marked.parse(message.content)
-		dontsaythat.forEach(function(word) {
-			message.content = message.content.replace(new RegExp(word, 'gi'), '****')
-		})
+		message.content = filter.clean(message.content);
 
 		// doing emojis
 
@@ -177,7 +242,7 @@ ws.on("connection", socket => {
 		message.raw.author = username
 
 		if (Object.keys(shadowBans).includes(username)) {
-			let adminSocks = (await io.fetchSockets()).filter(x => ['3586618', '3670753'].includes(x.handshake.headers['x-replit-user-id']))
+			let adminSocks = (await io.fetchSockets()).filter(x => ['3586618', '3670753', '5431535'].includes(x.handshake.headers['x-replit-user-id']))
 
 			if (adminSocks.length) {
 				adminSocks.forEach(sock => {
@@ -198,6 +263,7 @@ ws.on("connection", socket => {
 app.use(express.static("public"));
 app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
+app.set('trust proxy', 1)
 
 app.get("/", async (req, res) => {
 	let cachedMessages = await db.get('messages-lobby');
@@ -207,8 +273,8 @@ app.get("/", async (req, res) => {
 		user: {
 			name: username
 		},
-		cpt,
-		cachedMessages,
+		// cpt,
+		// cachedMessages,
 		name
 	});
 });
@@ -252,8 +318,14 @@ let VoiceChat_Whitelisted_Users = [
 	"Platformer22",
 	"zplusfour",
 	"21natzil",
-	"IroncladDev"
-]
+	"IroncladDev",
+	"soren",
+	"MRXXX999",
+	'REAPERVIRUS',
+  "DillonB07",
+  "yeshsgsvgs",
+	"Raadsel"
+] // disable whitelist tmrw? ok no imma add myself if u dont mind - yeshgvs
 
 const VoiceChat_Current_Users = new Map();
 const VoiceChat_User_States = new Map();
@@ -289,48 +361,47 @@ voiceNsp.on('connection', async (socket) => {
 		let UserState = Object.assign(user, user)
 		UserState.muted = UserState.deafened = false
 		VoiceChat_User_States.set(socket.id, UserState)
+    	socket.on('voice.data', (dataUri) => {
+  		if (VoiceChat_User_States.get(socket.id).muted) return;
+  		let deaf = Object.keys(Object.fromEntries(VoiceChat_User_States)).filter(x => VoiceChat_User_States.get(x).deafened && VoiceChat_Current_Users.get(curChannel).has(x))
+  		voiceNsp.except(socket.id).except(deaf).to(curChannel).emit('voice.data', user, dataUri)
+  	})
+  
+  	socket.on('voice.mute', (state) => {
+  		let UserState = VoiceChat_User_States.get(socket.id)
+  
+  		UserState.muted = state
+  
+  		VoiceChat_User_States.set(socket.id, UserState)
+  	})
+  
+  	socket.on('voice.deaf', (state) => {
+  		let UserState = VoiceChat_User_States.get(socket.id)
+  
+  		UserState.deafened = state
+  
+  		VoiceChat_User_States.set(socket.id, UserState)
+  	})
+  
+  	socket.on('voice.leave', () => {
+  		socket.leave(curChannel)
+  		voiceNsp.except(socket.id).to(curChannel).emit('voice.leave', user)
+  		try {
+  			(VoiceChat_Current_Users.get(curChannel) || new Map()).delete(socket.id)
+  		} catch (err) {
+  			console.log(err)
+  		}
+  	})
+  	socket.on('disconnecting', () => {
+  		socket.leave(curChannel)
+  		voiceNsp.except(socket.id).to(curChannel).emit('voice.leave', user)
+  		try {
+  			(VoiceChat_Current_Users.get(curChannel) || new Map()).delete(socket.id)
+  		} catch (err) {
+  			console.log(err)
+  		}
+  	})
 	});
-
-	socket.on('voice.data', (dataUri) => {
-		if (VoiceChat_User_States.get(socket.id).muted) return;
-		let deaf = Object.keys(Object.fromEntries(VoiceChat_User_States)).filter(x => VoiceChat_User_States.get(x).deafened && VoiceChat_Current_Users.get(curChannel).has(x))
-		voiceNsp.except(socket.id).except(deaf).to(curChannel).emit('voice.data', user, dataUri)
-	})
-
-	socket.on('voice.mute', (state) => {
-		let UserState = VoiceChat_User_States.get(socket.id)
-
-		UserState.muted = state
-
-		VoiceChat_User_States.set(socket.id, UserState)
-	})
-
-	socket.on('voice.deaf', (state) => {
-		let UserState = VoiceChat_User_States.get(socket.id)
-
-		UserState.deafened = state
-
-		VoiceChat_User_States.set(socket.id, UserState)
-	})
-
-	socket.on('voice.leave', () => {
-		socket.leave(curChannel)
-		voiceNsp.except(socket.id).to(curChannel).emit('voice.leave', user)
-		try {
-			(VoiceChat_Current_Users.get(curChannel) || new Map()).delete(socket.id)
-		} catch (err) {
-			console.log(err)
-		}
-	})
-	socket.on('disconnecting', () => {
-		socket.leave(curChannel)
-		voiceNsp.except(socket.id).to(curChannel).emit('voice.leave', user)
-		try {
-			(VoiceChat_Current_Users.get(curChannel) || new Map()).delete(socket.id)
-		} catch (err) {
-			console.log(err)
-		}
-	})
 })
 
 // End Voice Chat
@@ -358,4 +429,13 @@ app.get("*", (req, res) => {
 
 server.listen(80);
 
-process.stderr.pipe(require('fs').createWriteStream('./err.txt'))
+process.on('unhandledRejection', (e) => {
+	console.error(e)
+	require('fs').appendFileSync('./err.txt', e + '\n' + e.stack  +Date.now() + '\n--------------\n\n')
+});
+process.on('uncaughtException', (e) => {
+	console.error(e)
+	require('fs').appendFileSync('./err.txt', e + '\n' + e.stack  +Date.now() + '\n--------------\n\n')
+});
+
+// process.stderr.pipe(require('fs').createWriteStream('./err.txt'))

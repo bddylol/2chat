@@ -416,3 +416,8 @@ img.user {
         background-position: 100% 0;
     }
 }
+
+img {
+	max-width: 700px;
+	max-height: 500px;
+}

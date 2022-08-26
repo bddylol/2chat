@@ -10,6 +10,9 @@
 </head>
 
 <body>
+
+		<%- include('./ann.html') %>
+	
 		<div class="joinroom-wrapper" id="joinroom-wrapper" onclick="">
 		<div class="joinroom" style="z-index:13796;">
 			<h2>Join Room</h2>
@@ -54,6 +57,7 @@ menu
 
 
   <div class="container" id="container">
+		<div>
     <div id="chat_wrapper">
       <div id="chat_header">
         <h4><%= channel %></h4>
@@ -86,6 +90,11 @@ menu
 				<input name="mutebutn" type="checkbox" id="mute_checkbox" />
 			</div> -->
 		</div>
+		</div>
+		<iframe src="/" style="
+    border: 0;
+    height: 100%;
+"></iframe>
   </div>
   <div class="login" id="login">
     <script authed="location.reload()" src="https://auth.util.repl.co/script.js"></script>
