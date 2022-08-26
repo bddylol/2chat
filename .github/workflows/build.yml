@@ -1,8 +1,6 @@
 name: Build/release
 
-on:
-  push:
-    paths: app/**/*
+on: [workflow_dispatch]
 
 jobs:
   release:
