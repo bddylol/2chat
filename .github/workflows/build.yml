@@ -20,6 +20,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10
+          
+      - name: Change directory
+        run: 'cd app'
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
